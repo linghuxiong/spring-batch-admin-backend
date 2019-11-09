@@ -19,19 +19,15 @@ import java.util.List;
  * @date 2019/11/5 10:54 下午
  */
 @Repository
-public class SpringBatchDao {
-
-    private static final String TOTAL_NUMBER_SQL = " select count(*) from ( {0} ) job ";
-    private static final String PAGEABLE_SQL = " select * from ( {0} ) job limit ?,? ";
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+public class SpringBatchDao extends BaseDao{
 
     public Page<JSONObject> loadBatchPageable(Pageable pageable,String jobName,String status){
 
-        List<Object> parames = new ArrayList<>();
+
         String findAllJobExecutions = "SELECT A.JOB_EXECUTION_ID, A.START_TIME, A.END_TIME, A.STATUS, A.EXIT_CODE, A.EXIT_MESSAGE, A.CREATE_TIME, A.LAST_UPDATED, A.VERSION, A.JOB_CONFIGURATION_LOCATION, B.JOB_NAME "
                 + " from BATCH_JOB_EXECUTION A,BATCH_JOB_INSTANCE B WHERE A.JOB_INSTANCE_ID = B.JOB_INSTANCE_ID ";
+
+        List<Object> parames = new ArrayList<>();
 
         if(!StringUtils.isEmpty(jobName)){
             findAllJobExecutions += " AND UPPER(B.JOB_NAME) LIKE ? ";
