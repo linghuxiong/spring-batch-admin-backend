@@ -14,7 +14,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TriggerDao extends JpaRepository<TriggerEntity,Long> {
 
-    long count(Specification<TriggerEntity> queryCondition);
+    //long count(Specification<TriggerEntity> queryCondition);
+
+    /**
+     *
+     * @param queryCondition
+     * @param pageable
+     * @return
+     */
     Page<TriggerEntity> findAll(Specification<TriggerEntity> queryCondition,Pageable pageable);
 
 }

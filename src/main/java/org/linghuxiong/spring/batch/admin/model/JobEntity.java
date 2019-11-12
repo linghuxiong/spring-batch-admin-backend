@@ -1,6 +1,5 @@
 package org.linghuxiong.spring.batch.admin.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -50,11 +49,9 @@ public class JobEntity {
     @Column(name = "CALLBACK_URL")
     private String callbackUrl;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "UPDATE_TIME")
     private Date updatedAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "INSERT_TIME")
     private Date createdAt;
 }

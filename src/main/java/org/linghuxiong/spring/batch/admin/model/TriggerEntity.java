@@ -1,6 +1,5 @@
 package org.linghuxiong.spring.batch.admin.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
