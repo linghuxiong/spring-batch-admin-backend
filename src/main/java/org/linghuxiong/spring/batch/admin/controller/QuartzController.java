@@ -40,8 +40,8 @@ public class QuartzController {
     }
 
     @PostMapping("/remove")
-    public String removeQuartzTriggerJob(@RequestParam String id){
-        quartzService.removeQuartzTriggerJob(id);
+    public String removeQuartzTriggerJob(@RequestParam String key){
+        quartzService.removeQuartzTriggerJob(key);
         return "success";
     }
 
