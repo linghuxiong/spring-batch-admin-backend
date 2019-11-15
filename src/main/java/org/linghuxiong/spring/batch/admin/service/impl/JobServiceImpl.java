@@ -3,6 +3,9 @@ package org.linghuxiong.spring.batch.admin.service.impl;
 import org.linghuxiong.spring.batch.admin.dao.JobDao;
 import org.linghuxiong.spring.batch.admin.model.JobEntity;
 import org.linghuxiong.spring.batch.admin.service.JobService;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     JobDao jobDao;
+
+    @Autowired
+    private Scheduler scheduler ;
 
     @Override
     public Page<JobEntity> loadJobPageable(Pageable pageable, String name, Integer type, Integer status, String triggerName, String springJobName) {
@@ -71,8 +77,15 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public JobEntity toggleStatus(Long jobId, Integer status) {
+    public JobEntity toggleStatus(Long jobId, Integer status) throws SchedulerException {
         JobEntity entity = jobDao.getOne(jobId);
+
+        if(status.intValue() == 0){
+            scheduler.pauseJob(JobKey.jobKey(entity.getName(),entity.getGroup()));
+        }else if(status.intValue() == 1){
+            scheduler.resumeJob(JobKey.jobKey(entity.getName(),entity.getGroup()));
+        }
+
         entity.setStatus(status);
         jobDao.save(entity);
         return entity;

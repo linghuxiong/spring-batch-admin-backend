@@ -21,7 +21,7 @@ public class QuartzDao extends BaseDao{
 
     public Page<JSONObject> loadQuartzPageable(Pageable pageable,String schedName, String triggerGroup, String triggerName, String jobGroup, String jobName,String triggerStatus){
 
-        String querySql = "select CONCAT_WS('-',SCHED_NAME,TRIGGER_GROUP,TRIGGER_NAME,JOB_GROUP,JOB_NAME) as ID, SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,JOB_NAME,JOB_GROUP,NEXT_FIRE_TIME,PREV_FIRE_TIME,PRIORITY,TRIGGER_STATE,START_TIME,END_TIME,MISFIRE_INSTR from QRTZ_TRIGGERS A";
+        String querySql = "select CONCAT_WS('#',SCHED_NAME,TRIGGER_GROUP,TRIGGER_NAME,JOB_GROUP,JOB_NAME) as ID, SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,JOB_NAME,JOB_GROUP,FROM_UNIXTIME(NEXT_FIRE_TIME/1000,'%Y-%m-%d %h:%i:%s') AS NEXT_FIRE_TIME ,FROM_UNIXTIME(PREV_FIRE_TIME/1000,'%Y-%m-%d %h:%i:%s') AS PREV_FIRE_TIME ,PRIORITY,TRIGGER_STATE,FROM_UNIXTIME(START_TIME/1000,'%Y-%m-%d %h:%i:%s') AS START_TIME, FROM_UNIXTIME(END_TIME/1000,'%Y-%m-%d %h:%i:%s') AS END_TIME ,MISFIRE_INSTR from QRTZ_TRIGGERS A";
 
         List<Object> parames = new ArrayList<>();
 

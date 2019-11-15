@@ -1,21 +1,18 @@
 package org.linghuxiong.spring.batch.admin.dao;
 
-import org.linghuxiong.spring.batch.admin.model.JobEntity;
+import org.linghuxiong.spring.batch.admin.model.QuartzJobFireHistoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author linghuxiong
  * @date 2019/11/8 4:34 下午
  */
 @Repository
-public interface JobDao extends JpaRepository<JobEntity,Long> {
+public interface QuartzJobFireHistoryDao extends JpaRepository<QuartzJobFireHistoryEntity,String> {
 
     /**
      *
@@ -23,7 +20,6 @@ public interface JobDao extends JpaRepository<JobEntity,Long> {
      * @param pageable
      * @return
      */
-    Page<JobEntity> findAll(Specification<JobEntity> queryCondition, Pageable pageable);
+    Page<QuartzJobFireHistoryEntity> findAll(Specification<QuartzJobFireHistoryEntity> queryCondition, Pageable pageable);
 
-    List<JobEntity> findAllByTriggerNameIsNotNull();
 }

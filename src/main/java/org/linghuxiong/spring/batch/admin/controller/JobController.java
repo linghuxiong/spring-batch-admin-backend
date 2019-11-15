@@ -3,6 +3,7 @@ package org.linghuxiong.spring.batch.admin.controller;
 import org.linghuxiong.spring.batch.admin.model.JobEntity;
 import org.linghuxiong.spring.batch.admin.model.TriggerEntity;
 import org.linghuxiong.spring.batch.admin.service.JobService;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +33,7 @@ public class JobController {
     }
 
     @PostMapping("/toggleStatus")
-    public String toggle(@RequestParam Long jobId,@RequestParam Integer status){
+    public String toggle(@RequestParam Long jobId,@RequestParam Integer status) throws SchedulerException {
         jobService.toggleStatus(jobId,status);
         return "success";
     }

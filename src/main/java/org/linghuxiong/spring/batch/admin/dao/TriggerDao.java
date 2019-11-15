@@ -24,4 +24,6 @@ public interface TriggerDao extends JpaRepository<TriggerEntity,Long> {
      */
     Page<TriggerEntity> findAll(Specification<TriggerEntity> queryCondition,Pageable pageable);
 
+    TriggerEntity getByNameEquals(String name);
+
 }

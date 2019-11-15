@@ -2,6 +2,7 @@ package org.linghuxiong.spring.batch.admin.controller;
 
 import org.linghuxiong.spring.batch.admin.model.TriggerEntity;
 import org.linghuxiong.spring.batch.admin.service.TriggerService;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +21,7 @@ public class TriggerController {
     TriggerService triggerService;
 
     @PostMapping("/save")
-    public TriggerEntity save(@RequestBody TriggerEntity triggerEntity){
+    public TriggerEntity save(@RequestBody TriggerEntity triggerEntity) throws SchedulerException {
         return triggerService.save(triggerEntity);
     }
 
@@ -31,7 +32,7 @@ public class TriggerController {
     }
 
     @PostMapping("/toggleStatus")
-    public String toggle(@RequestParam Long triggerId,@RequestParam Integer status){
+    public String toggle(@RequestParam Long triggerId,@RequestParam Integer status) throws SchedulerException {
         triggerService.toggleStatus(triggerId,status);
         return "success";
     }
