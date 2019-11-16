@@ -32,7 +32,7 @@ public class JobExecutionHistoryEntity {
     private String exitMessage;
 
     @Column(name = "STATUS")
-    private Integer status;
+    private String status;
 
     @Column(name = "USER_NAME")
     private String userName;

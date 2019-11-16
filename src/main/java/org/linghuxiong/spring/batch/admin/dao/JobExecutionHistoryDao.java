@@ -22,4 +22,6 @@ public interface JobExecutionHistoryDao extends JpaRepository<JobExecutionHistor
      * @return
      */
     Page<JobExecutionHistoryEntity> findAll(Specification<JobExecutionHistoryEntity> queryCondition, Pageable pageable);
+
+    JobExecutionHistoryEntity findByRunId(Long runId);
 }

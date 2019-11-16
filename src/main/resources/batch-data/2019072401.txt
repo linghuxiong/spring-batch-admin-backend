@@ -1,0 +1,1 @@
+2019-07-25 16:33:52.708  INFO 11667 --- [  restartedMain] org.linghuxiong.batch.BatchApplication   : Starting BatchApplication on ericdeMacBook-Pro.local with PID 11667 (/Users/eric/Documents/dev/linghuxiong/spring-boot-demo/batch/target/classes started by eric in /Users/eric/Documents/dev/linghuxiong/spring-boot-demo/batch)

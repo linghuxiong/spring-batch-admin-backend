@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -35,7 +36,7 @@ public class JobExecutionHistoryController {
             pageSize = Integer.valueOf(10);
         }
 
-        Pageable pageable = PageRequest.of(currentPage-1, pageSize);
+        Pageable pageable = PageRequest.of(currentPage-1, pageSize, Sort.by(Sort.Direction.DESC,"id"));
         return jobExecutionHistoryService.loadJobHistoryPageable(pageable,jobName,userName,status,runId);
     }
 }
