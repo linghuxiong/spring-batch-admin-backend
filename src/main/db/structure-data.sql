@@ -1,19 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : urp
- Source Server Type    : MySQL
- Source Server Version : 50643
- Source Host           : 120.79.89.11:3306
- Source Schema         : batch_config
-
- Target Server Type    : MySQL
- Target Server Version : 50643
- File Encoding         : 65001
-
- Date: 17/11/2019 02:00:36
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
