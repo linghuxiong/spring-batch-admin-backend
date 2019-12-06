@@ -6,6 +6,15 @@ import org.linghuxiong.spring.batch.admin.service.JobService;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +41,12 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private Scheduler scheduler ;
+
+    @Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    JobRegistry jobRegistry;
 
     @Override
     public Page<JobEntity> loadJobPageable(Pageable pageable, String name, Integer type, Integer status, String triggerName, String springJobName) {
@@ -63,6 +78,12 @@ public class JobServiceImpl implements JobService {
             }
         };
         return jobDao.findAll(queryCondition, pageable);
+    }
+
+    @Override
+    public void launch(Long jobId) throws NoSuchJobException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobEntity jobEntity = jobDao.getOne(jobId);
+        jobLauncher.run(jobRegistry.getJob(jobEntity.getSpringJobName()),new JobParametersBuilder().addDate("#CURRENNCY",new Date()).toJobParameters());
     }
 
     @Override

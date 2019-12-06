@@ -4,6 +4,11 @@ import org.linghuxiong.spring.batch.admin.model.JobEntity;
 import org.linghuxiong.spring.batch.admin.model.TriggerEntity;
 import org.linghuxiong.spring.batch.admin.service.JobService;
 import org.quartz.SchedulerException;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,5 +62,12 @@ public class JobController {
         return jobService.loadJobPageable(pageable,name,type,status,triggerName,springJobName);
 
     }
+
+    @PostMapping("/launch")
+    public String launch(@RequestParam Long jobId) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
+        jobService.launch(jobId);
+        return "success";
+    }
+
 
 }
