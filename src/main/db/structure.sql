@@ -1,0 +1,431 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : localhost
+ Source Server Type    : MySQL
+ Source Server Version : 50719
+ Source Host           : localhost:3306
+ Source Schema         : batch_admin
+
+ Target Server Type    : MySQL
+ Target Server Version : 50719
+ File Encoding         : 65001
+
+ Date: 15/02/2020 19:22:56
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for BATCH_JOB_EXECUTION
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION`;
+CREATE TABLE `BATCH_JOB_EXECUTION` (
+  `JOB_EXECUTION_ID` bigint(20) NOT NULL,
+  `VERSION` bigint(20) DEFAULT NULL,
+  `JOB_INSTANCE_ID` bigint(20) NOT NULL,
+  `CREATE_TIME` datetime NOT NULL,
+  `START_TIME` datetime DEFAULT NULL,
+  `END_TIME` datetime DEFAULT NULL,
+  `STATUS` varchar(10) DEFAULT NULL,
+  `EXIT_CODE` varchar(2500) DEFAULT NULL,
+  `EXIT_MESSAGE` varchar(2500) DEFAULT NULL,
+  `LAST_UPDATED` datetime DEFAULT NULL,
+  `JOB_CONFIGURATION_LOCATION` varchar(2500) DEFAULT NULL,
+  PRIMARY KEY (`JOB_EXECUTION_ID`),
+  KEY `JOB_INST_EXEC_FK` (`JOB_INSTANCE_ID`),
+  CONSTRAINT `JOB_INST_EXEC_FK` FOREIGN KEY (`JOB_INSTANCE_ID`) REFERENCES `BATCH_JOB_INSTANCE` (`JOB_INSTANCE_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_JOB_EXECUTION_CONTEXT
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION_CONTEXT`;
+CREATE TABLE `BATCH_JOB_EXECUTION_CONTEXT` (
+  `JOB_EXECUTION_ID` bigint(20) NOT NULL,
+  `SHORT_CONTEXT` varchar(2500) NOT NULL,
+  `SERIALIZED_CONTEXT` text,
+  PRIMARY KEY (`JOB_EXECUTION_ID`),
+  CONSTRAINT `JOB_EXEC_CTX_FK` FOREIGN KEY (`JOB_EXECUTION_ID`) REFERENCES `BATCH_JOB_EXECUTION` (`JOB_EXECUTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_JOB_EXECUTION_PARAMS
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION_PARAMS`;
+CREATE TABLE `BATCH_JOB_EXECUTION_PARAMS` (
+  `JOB_EXECUTION_ID` bigint(20) NOT NULL,
+  `TYPE_CD` varchar(6) NOT NULL,
+  `KEY_NAME` varchar(100) NOT NULL,
+  `STRING_VAL` varchar(250) DEFAULT NULL,
+  `DATE_VAL` datetime DEFAULT NULL,
+  `LONG_VAL` bigint(20) DEFAULT NULL,
+  `DOUBLE_VAL` double DEFAULT NULL,
+  `IDENTIFYING` char(1) NOT NULL,
+  KEY `JOB_EXEC_PARAMS_FK` (`JOB_EXECUTION_ID`),
+  CONSTRAINT `JOB_EXEC_PARAMS_FK` FOREIGN KEY (`JOB_EXECUTION_ID`) REFERENCES `BATCH_JOB_EXECUTION` (`JOB_EXECUTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_JOB_EXECUTION_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_JOB_EXECUTION_SEQ`;
+CREATE TABLE `BATCH_JOB_EXECUTION_SEQ` (
+  `ID` bigint(20) NOT NULL,
+  `UNIQUE_KEY` char(1) NOT NULL,
+  UNIQUE KEY `UNIQUE_KEY_UN` (`UNIQUE_KEY`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_JOB_INSTANCE
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_JOB_INSTANCE`;
+CREATE TABLE `BATCH_JOB_INSTANCE` (
+  `JOB_INSTANCE_ID` bigint(20) NOT NULL,
+  `VERSION` bigint(20) DEFAULT NULL,
+  `JOB_NAME` varchar(100) NOT NULL,
+  `JOB_KEY` varchar(32) NOT NULL,
+  PRIMARY KEY (`JOB_INSTANCE_ID`),
+  UNIQUE KEY `JOB_INST_UN` (`JOB_NAME`,`JOB_KEY`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_JOB_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_JOB_SEQ`;
+CREATE TABLE `BATCH_JOB_SEQ` (
+  `ID` bigint(20) NOT NULL,
+  `UNIQUE_KEY` char(1) NOT NULL,
+  UNIQUE KEY `UNIQUE_KEY_UN` (`UNIQUE_KEY`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_STEP_EXECUTION
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_STEP_EXECUTION`;
+CREATE TABLE `BATCH_STEP_EXECUTION` (
+  `STEP_EXECUTION_ID` bigint(20) NOT NULL,
+  `VERSION` bigint(20) NOT NULL,
+  `STEP_NAME` varchar(100) NOT NULL,
+  `JOB_EXECUTION_ID` bigint(20) NOT NULL,
+  `START_TIME` datetime NOT NULL,
+  `END_TIME` datetime DEFAULT NULL,
+  `STATUS` varchar(10) DEFAULT NULL,
+  `COMMIT_COUNT` bigint(20) DEFAULT NULL,
+  `READ_COUNT` bigint(20) DEFAULT NULL,
+  `FILTER_COUNT` bigint(20) DEFAULT NULL,
+  `WRITE_COUNT` bigint(20) DEFAULT NULL,
+  `READ_SKIP_COUNT` bigint(20) DEFAULT NULL,
+  `WRITE_SKIP_COUNT` bigint(20) DEFAULT NULL,
+  `PROCESS_SKIP_COUNT` bigint(20) DEFAULT NULL,
+  `ROLLBACK_COUNT` bigint(20) DEFAULT NULL,
+  `EXIT_CODE` varchar(2500) DEFAULT NULL,
+  `EXIT_MESSAGE` varchar(2500) DEFAULT NULL,
+  `LAST_UPDATED` datetime DEFAULT NULL,
+  PRIMARY KEY (`STEP_EXECUTION_ID`),
+  KEY `JOB_EXEC_STEP_FK` (`JOB_EXECUTION_ID`),
+  CONSTRAINT `JOB_EXEC_STEP_FK` FOREIGN KEY (`JOB_EXECUTION_ID`) REFERENCES `BATCH_JOB_EXECUTION` (`JOB_EXECUTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_STEP_EXECUTION_CONTEXT
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_STEP_EXECUTION_CONTEXT`;
+CREATE TABLE `BATCH_STEP_EXECUTION_CONTEXT` (
+  `STEP_EXECUTION_ID` bigint(20) NOT NULL,
+  `SHORT_CONTEXT` varchar(2500) NOT NULL,
+  `SERIALIZED_CONTEXT` text,
+  PRIMARY KEY (`STEP_EXECUTION_ID`),
+  CONSTRAINT `STEP_EXEC_CTX_FK` FOREIGN KEY (`STEP_EXECUTION_ID`) REFERENCES `BATCH_STEP_EXECUTION` (`STEP_EXECUTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for BATCH_STEP_EXECUTION_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `BATCH_STEP_EXECUTION_SEQ`;
+CREATE TABLE `BATCH_STEP_EXECUTION_SEQ` (
+  `ID` bigint(20) NOT NULL,
+  `UNIQUE_KEY` char(1) NOT NULL,
+  UNIQUE KEY `UNIQUE_KEY_UN` (`UNIQUE_KEY`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_BLOB_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_BLOB_TRIGGERS`;
+CREATE TABLE `QRTZ_BLOB_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(190) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  `BLOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `SCHED_NAME` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_BLOB_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_CALENDARS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_CALENDARS`;
+CREATE TABLE `QRTZ_CALENDARS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `CALENDAR_NAME` varchar(190) NOT NULL,
+  `CALENDAR` blob NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`CALENDAR_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_CRON_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_CRON_TRIGGERS`;
+CREATE TABLE `QRTZ_CRON_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(190) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  `CRON_EXPRESSION` varchar(120) NOT NULL,
+  `TIME_ZONE_ID` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_CRON_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_FIRED_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_FIRED_TRIGGERS`;
+CREATE TABLE `QRTZ_FIRED_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `ENTRY_ID` varchar(95) NOT NULL,
+  `TRIGGER_NAME` varchar(190) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  `INSTANCE_NAME` varchar(190) NOT NULL,
+  `FIRED_TIME` bigint(13) NOT NULL,
+  `SCHED_TIME` bigint(13) NOT NULL,
+  `PRIORITY` int(11) NOT NULL,
+  `STATE` varchar(16) NOT NULL,
+  `JOB_NAME` varchar(190) DEFAULT NULL,
+  `JOB_GROUP` varchar(190) DEFAULT NULL,
+  `IS_NONCONCURRENT` varchar(1) DEFAULT NULL,
+  `REQUESTS_RECOVERY` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`ENTRY_ID`),
+  KEY `IDX_QRTZ_FT_TRIG_INST_NAME` (`SCHED_NAME`,`INSTANCE_NAME`),
+  KEY `IDX_QRTZ_FT_INST_JOB_REQ_RCVRY` (`SCHED_NAME`,`INSTANCE_NAME`,`REQUESTS_RECOVERY`),
+  KEY `IDX_QRTZ_FT_J_G` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_FT_JG` (`SCHED_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_FT_T_G` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_FT_TG` (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_JOB_DETAILS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_JOB_DETAILS`;
+CREATE TABLE `QRTZ_JOB_DETAILS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `JOB_NAME` varchar(190) NOT NULL,
+  `JOB_GROUP` varchar(190) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `JOB_CLASS_NAME` varchar(250) NOT NULL,
+  `IS_DURABLE` varchar(1) NOT NULL,
+  `IS_NONCONCURRENT` varchar(1) NOT NULL,
+  `IS_UPDATE_DATA` varchar(1) NOT NULL,
+  `REQUESTS_RECOVERY` varchar(1) NOT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_J_REQ_RECOVERY` (`SCHED_NAME`,`REQUESTS_RECOVERY`),
+  KEY `IDX_QRTZ_J_GRP` (`SCHED_NAME`,`JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_LOCKS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_LOCKS`;
+CREATE TABLE `QRTZ_LOCKS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `LOCK_NAME` varchar(40) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`LOCK_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_PAUSED_TRIGGER_GRPS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_PAUSED_TRIGGER_GRPS`;
+CREATE TABLE `QRTZ_PAUSED_TRIGGER_GRPS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_SCHEDULER_STATE
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SCHEDULER_STATE`;
+CREATE TABLE `QRTZ_SCHEDULER_STATE` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `INSTANCE_NAME` varchar(190) NOT NULL,
+  `LAST_CHECKIN_TIME` bigint(13) NOT NULL,
+  `CHECKIN_INTERVAL` bigint(13) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`INSTANCE_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_SIMPLE_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SIMPLE_TRIGGERS`;
+CREATE TABLE `QRTZ_SIMPLE_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(190) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  `REPEAT_COUNT` bigint(7) NOT NULL,
+  `REPEAT_INTERVAL` bigint(12) NOT NULL,
+  `TIMES_TRIGGERED` bigint(10) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_SIMPLE_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_SIMPROP_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SIMPROP_TRIGGERS`;
+CREATE TABLE `QRTZ_SIMPROP_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(190) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  `STR_PROP_1` varchar(512) DEFAULT NULL,
+  `STR_PROP_2` varchar(512) DEFAULT NULL,
+  `STR_PROP_3` varchar(512) DEFAULT NULL,
+  `INT_PROP_1` int(11) DEFAULT NULL,
+  `INT_PROP_2` int(11) DEFAULT NULL,
+  `LONG_PROP_1` bigint(20) DEFAULT NULL,
+  `LONG_PROP_2` bigint(20) DEFAULT NULL,
+  `DEC_PROP_1` decimal(13,4) DEFAULT NULL,
+  `DEC_PROP_2` decimal(13,4) DEFAULT NULL,
+  `BOOL_PROP_1` varchar(1) DEFAULT NULL,
+  `BOOL_PROP_2` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_SIMPROP_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for QRTZ_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_TRIGGERS`;
+CREATE TABLE `QRTZ_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(190) NOT NULL,
+  `TRIGGER_GROUP` varchar(190) NOT NULL,
+  `JOB_NAME` varchar(190) NOT NULL,
+  `JOB_GROUP` varchar(190) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `NEXT_FIRE_TIME` bigint(13) DEFAULT NULL,
+  `PREV_FIRE_TIME` bigint(13) DEFAULT NULL,
+  `PRIORITY` int(11) DEFAULT NULL,
+  `TRIGGER_STATE` varchar(16) NOT NULL,
+  `TRIGGER_TYPE` varchar(8) NOT NULL,
+  `START_TIME` bigint(13) NOT NULL,
+  `END_TIME` bigint(13) DEFAULT NULL,
+  `CALENDAR_NAME` varchar(190) DEFAULT NULL,
+  `MISFIRE_INSTR` smallint(2) DEFAULT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_T_J` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_T_JG` (`SCHED_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_T_C` (`SCHED_NAME`,`CALENDAR_NAME`),
+  KEY `IDX_QRTZ_T_G` (`SCHED_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_T_STATE` (`SCHED_NAME`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_N_STATE` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_N_G_STATE` (`SCHED_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_NEXT_FIRE_TIME` (`SCHED_NAME`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_ST` (`SCHED_NAME`,`TRIGGER_STATE`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE_GRP` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  CONSTRAINT `QRTZ_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) REFERENCES `QRTZ_JOB_DETAILS` (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for t_batch_data
+-- ----------------------------
+DROP TABLE IF EXISTS `t_batch_data`;
+CREATE TABLE `t_batch_data` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25129 DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for t_job
+-- ----------------------------
+DROP TABLE IF EXISTS `t_job`;
+CREATE TABLE `t_job` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `callback_url` varchar(255) DEFAULT NULL,
+  `insert_time` datetime DEFAULT NULL,
+  `estimated_time` bigint(20) DEFAULT NULL,
+  `job_group` varchar(255) DEFAULT NULL,
+  `job_desc` varchar(255) DEFAULT NULL,
+  `job_name` varchar(255) DEFAULT NULL,
+  `params` varchar(255) DEFAULT NULL,
+  `spring_job_name` varchar(255) DEFAULT NULL,
+  `job_status` int(11) DEFAULT NULL,
+  `trigger_name` varchar(255) DEFAULT NULL,
+  `job_type` int(11) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for t_job_execution_history
+-- ----------------------------
+DROP TABLE IF EXISTS `t_job_execution_history`;
+CREATE TABLE `t_job_execution_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `insert_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `exit_code` varchar(255) DEFAULT NULL,
+  `exit_message` varchar(255) DEFAULT NULL,
+  `job_name` varchar(255) DEFAULT NULL,
+  `run_id` bigint(20) DEFAULT NULL,
+  `start_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for t_quartz_job_fire_history
+-- ----------------------------
+DROP TABLE IF EXISTS `t_quartz_job_fire_history`;
+CREATE TABLE `t_quartz_job_fire_history` (
+  `finish_time` datetime DEFAULT NULL,
+  `fire_instance_id` varchar(255) NOT NULL DEFAULT '',
+  `fire_time` datetime DEFAULT NULL,
+  `job_group` varchar(255) DEFAULT NULL,
+  `job_name` varchar(255) DEFAULT NULL,
+  `next_fire_time` datetime DEFAULT NULL,
+  `previous_fire_time` datetime DEFAULT NULL,
+  `trigger_group` varchar(255) DEFAULT NULL,
+  `trigger_name` varchar(255) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fire_instance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk;
+
+-- ----------------------------
+-- Table structure for t_trigger
+-- ----------------------------
+DROP TABLE IF EXISTS `t_trigger`;
+CREATE TABLE `t_trigger` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `insert_time` datetime DEFAULT NULL,
+  `cron_expression` varchar(255) DEFAULT NULL,
+  `trigger_group` varchar(255) DEFAULT NULL,
+  `trigger_name` varchar(255) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `time_interval` bigint(20) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=gbk;
+
+SET FOREIGN_KEY_CHECKS = 1;

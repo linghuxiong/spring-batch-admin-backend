@@ -1,13 +1,12 @@
 package org.linghuxiong.spring.batch.admin.batch.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.*;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.mapping.PassThroughLineMapper;
@@ -18,11 +17,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Random;
+
 /**
  * @author linghuxiong
  * @date 2019-07-25 16:16
  */
 @Configurable
+@Slf4j
 public class FileTransferBatchConfig {
 
     @Autowired
@@ -35,11 +39,17 @@ public class FileTransferBatchConfig {
     @Bean
     public ItemReader<String> itemReader(){
         //FlatFileItemReader
-        return new FlatFileItemReaderBuilder<String>()
-                .name("simpleFileReader")
-                .resource(new ClassPathResource("batch-data/2019072401.txt"))
-                .lineMapper(new PassThroughLineMapper())
-                .build();
+        return new ItemReader<String>() {
+            @Override
+            public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+                log.info("==================================> exec ItemReader");
+                int i = new Random().nextInt(2);
+                if(i == 0){
+                    return null;
+                }
+                return i+"";
+            }
+        };
     }
 
     @StepScope
@@ -48,7 +58,8 @@ public class FileTransferBatchConfig {
         return new ItemProcessor<String, String>() {
             @Override
             public String process(String item) throws Exception {
-                return "[linghuxiong]"+item;
+                log.info("==================================> exec ItemProcessor");
+                return item;
             }
         };
     }
@@ -56,31 +67,29 @@ public class FileTransferBatchConfig {
     @StepScope
     @Bean
     public ItemWriter<String> itemWriter(){
-        return new FlatFileItemWriterBuilder<String>()
-                .name("simpleFileWriter")
-                .lineAggregator(new PassThroughLineAggregator<String>())
-                .resource(new FileSystemResource("/Users/eric/Documents/dev/linghuxiong/spring-boot-demo/batch/target/2019072402.txt"))
-                .build();
+        return new ItemWriter<String>() {
+            @Override
+            public void write(List<? extends String> list) throws Exception {
+                log.info("==================================> exec ItemWriter");
+            }
+        };
     }
 
     @Bean
-    public Step step1(){
+    public Step step1(ItemReader itemReader,ItemProcessor itemProcessor,ItemWriter itemWriter){
         return stepBuilderFactory.get("step1")
                 .<String,String>chunk(2)
-                .reader(itemReader())
-                .processor(itemProcessor())
-                .writer(itemWriter())
+                .reader(itemReader)
+                .processor(itemProcessor)
+                .writer(itemWriter)
                 .build();
     }
 
     @Bean
-    public Job job1(){
+    public Job job1(Step step1){
         return jobBuilderFactory.get("fileTransfer")
-                .start(step1())
+                .start(step1)
                 .build();
     }
-
-
-
 
 }
