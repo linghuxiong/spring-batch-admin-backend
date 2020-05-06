@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019/11/5 10:50 下午
  */
 @RestController
-@RequestMapping("/batch")
+@RequestMapping("/spring-batch")
 public class SpringBatchController {
 
     @Autowired
